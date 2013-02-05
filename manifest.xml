@@ -1,0 +1,14 @@
+<package>
+  <description brief="aslam_sample_consensus">
+
+     aslam_sample_consensus
+
+  </description>
+  <author>Paul Furgale</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/aslam_sample_consensus</url>
+
+</package>
+
+

@@ -1,0 +1,20 @@
+<package>
+  <description brief="aslam_ransac">
+
+     aslam_ransac
+
+  </description>
+  <author>Paul Furgale</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/aslam_ransac</url>
+
+  <depend package="sm_console"/>
+  <depend package="sm_eigen"/>
+  <depend package="sm_random"/>
+
+
+
+</package>
+
+
