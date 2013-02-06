@@ -8,6 +8,9 @@
   <license>BSD</license>
   <review status="unreviewed" notes=""/>
   <url>http://ros.org/wiki/aslam_sample_consensus</url>
+  <export>
+    <cpp cflags="-I${prefix}/include"/>
+  </export>
 
 </package>
 
