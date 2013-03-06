@@ -2,6 +2,7 @@
 #define ASLAM_SAMPLE_CONSENSUS_PROBLEM_HPP
 
 #include <boost/random.hpp>
+#include <boost/shared_ptr.hpp>
 #include <ctime>
 
 namespace aslam {
