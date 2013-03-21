@@ -8,6 +8,7 @@ namespace aslam {
     class SampleConsensus
     {
     public:
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         typedef PROBLEM_T problem_t;
         typedef typename problem_t::model_t model_t;
         
