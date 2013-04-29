@@ -1,33 +1,33 @@
-#ifndef ASLAM_SAMPLE_CONSENSUS_PROBLEM_HPP
-#define ASLAM_SAMPLE_CONSENSUS_PROBLEM_HPP
+#ifndef ASLAM_MULTI_SAMPLE_CONSENSUS_PROBLEM_HPP
+#define ASLAM_MULTI_SAMPLE_CONSENSUS_PROBLEM_HPP
 
 #include <boost/random.hpp>
-#include <boost/shared_ptr.hpp>
 #include <ctime>
 
 namespace aslam {
 
 template<typename MODEL_T>
-class SampleConsensusProblem
+class MultiSampleConsensusProblem
 {
 public:
     typedef MODEL_T model_t;
     
-    SampleConsensusProblem(bool randomSeed = true);
-    virtual ~SampleConsensusProblem();
+    MultiSampleConsensusProblem(bool randomSeed = true);
+    virtual ~MultiSampleConsensusProblem();
 
-    virtual void getSamples(int &iterations, std::vector<int> &samples);
+    virtual void getSamples(int &iterations, std::vector< std::vector<int> > &samples);
     
-    virtual bool isSampleGood(const std::vector<int> & sample) const;
+    virtual bool isSampleGood(const std::vector< std::vector<int> > & sample) const;
 
     /** \brief Get a pointer to the vector of indices used. */
-    boost::shared_ptr <std::vector<int> > getIndices() const;
+    boost::shared_ptr< std::vector< std::vector<int> > > getIndices() const;
 
-    void drawIndexSample (std::vector<int> & sample);
+    void drawIndexSample (std::vector< std::vector<int> > & sample);
 
     virtual int getSampleSize() const = 0;
+    virtual int getSubSampleSize( int i ) const = 0;
 
-    virtual bool computeModelCoefficients( const std::vector<int> & indices, model_t & outModel) const = 0;
+    virtual bool computeModelCoefficients( const std::vector< std::vector<int> > & indices, std::vector<model_t> & outModel) const = 0;
 
     /** \brief Recompute the model coefficients using the given inlier set
      * and return them to the user. Pure virtual.
@@ -39,16 +39,16 @@ public:
      * \param[in] model_coefficients the initial guess for the model coefficients
      * \param[out] optimized_coefficients the resultant recomputed coefficients after non-linear optimization
      */
-    virtual void optimizeModelCoefficients (const std::vector<int> & inliers, 
-                                            const model_t & model_coefficients,
-                                            model_t & optimized_coefficients) = 0;
+    virtual void optimizeModelCoefficients (const std::vector< std::vector<int> > & inliers,
+                                            const std::vector<model_t> & model_coefficients,
+                                            std::vector<model_t> & optimized_coefficients) = 0;
 
 
     /// \brief evaluate the score for the elements at indices based on this model.
     ///        low scores mean a good fit.
-    virtual void getSelectedDistancesToModel( const model_t & model, 
-                                              const std::vector<int> & indices,
-                                              std::vector<double> & scores) const = 0;
+    virtual void getSelectedDistancesToModel( const std::vector<model_t> & model, 
+                                              const std::vector< std::vector<int> > & indices,
+                                              std::vector< std::vector<double> > & scores) const = 0;
 
 
 
@@ -57,8 +57,8 @@ public:
      * \param[in] model_coefficients the coefficients of a model that we need to compute distances to 
      * \param[out] distances the resultant estimated distances
      */
-    virtual void getDistancesToModel (const model_t & model_coefficients, 
-                                      std::vector<double> &distances);
+    virtual void getDistancesToModel (const std::vector<model_t> & model_coefficients, 
+                                      std::vector< std::vector<double> > &distances);
 
 
 
@@ -70,9 +70,9 @@ public:
         * the outliers
         * \param[out] inliers the resultant model inliers
         */
-    virtual void selectWithinDistance (const model_t &model_coefficients, 
-                                         const double threshold,
-                                         std::vector<int> &inliers);
+    virtual void selectWithinDistance (const std::vector<model_t> &model_coefficients, 
+                                       const double threshold,
+                                       std::vector< std::vector<int> > &inliers);
 
       /** \brief Count all the points which respect the given model
         * coefficients as inliers. Pure virtual.
@@ -83,27 +83,27 @@ public:
         * determining the inliers from the outliers
         * \return the resultant number of inliers
         */
-      virtual int countWithinDistance (const model_t &model_coefficients, 
+      virtual int countWithinDistance (const std::vector<model_t> &model_coefficients, 
                                        const double threshold);
 
 
 
-    void setIndices(const std::vector<int> & indices);
-    void setUniformIndices(int N);
+    void setIndices(const std::vector< std::vector<int> > & indices);
+    void setUniformIndices(std::vector<int> N);
 
 
     int rnd();
     
     int max_sample_checks_;
     
-    boost::shared_ptr< std::vector<int> > indices_;
-    std::vector<int> shuffled_indices_;
+    boost::shared_ptr< std::vector< std::vector<int> > > indices_;
+    std::vector< std::vector<int> > shuffled_indices_;
 
     /** \brief Boost-based random number generator algorithm. */
     boost::mt19937 rng_alg_;
 
     /** \brief Boost-based random number generator distribution. */
-    boost::shared_ptr<boost::uniform_int<> > rng_dist_;
+    boost::shared_ptr< boost::uniform_int<> > rng_dist_;
 
     /** \brief Boost-based random number generator. */
     boost::shared_ptr<boost::variate_generator< boost::mt19937&, boost::uniform_int<> > > rng_gen_;
@@ -112,6 +112,6 @@ public:
 
 } // namespace aslam
 
-#include "implementation/SampleConsensusProblem.hpp"
+#include "implementation/MultiSampleConsensusProblem.hpp"
 
 #endif /* ASLAM_SAMPLE_CONSENSUS_PROBLEM_HPP */
