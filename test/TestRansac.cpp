@@ -1,5 +1,7 @@
+#include <stdlib.h>
+#include <math.h>
+#include <limits.h>
 #include <gtest/gtest.h>
-
 
 #include <aslam/Ransac.hpp>
 #include <aslam/Msac.hpp>

@@ -22,7 +22,7 @@ namespace aslam {
         int iterations_;
         double threshold_;
         double probability_;
-        std::vector<model_t> model_coefficients_;
+        model_t model_coefficients_;
         std::vector< std::vector<int> > model_;
         std::vector< std::vector<int> > inliers_;
         boost::shared_ptr<PROBLEM_T> sac_model_;

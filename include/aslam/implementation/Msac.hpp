@@ -58,7 +58,7 @@ namespace aslam {
             double d_cur_penalty = 0;
             // Iterate through the 3d points and calculate the distances from them to the model
             sac_model_->getDistancesToModel (model_coefficients, distances);
-    
+
             if (distances.empty () && k > 1.0)
                 continue;
 

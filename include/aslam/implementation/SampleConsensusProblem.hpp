@@ -51,7 +51,7 @@ namespace aslam {
         if (indices_->size() < (size_t)getSampleSize())
         {
           fprintf(stderr,"[sm::SampleConsensusModel::getSamples] Can not select %zu unique points out of %zu!\n",
-                     samples.size (), indices_->size ());
+                     (size_t) getSampleSize(), indices_->size ());
           // one of these will make it stop :)
           samples.clear();
           iterations = INT_MAX - 1;
@@ -60,6 +60,7 @@ namespace aslam {
 
         // Get a second point which is different than the first
         samples.resize( getSampleSize() );
+
         for (int iter = 0; iter < max_sample_checks_; ++iter)
         {
             drawIndexSample (samples);

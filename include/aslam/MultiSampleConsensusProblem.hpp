@@ -24,10 +24,9 @@ public:
 
     void drawIndexSample (std::vector< std::vector<int> > & sample);
 
-    virtual int getSampleSize() const = 0;
-    virtual int getSubSampleSize( int i ) const = 0;
+    virtual std::vector<int> getSampleSizes() const = 0;
 
-    virtual bool computeModelCoefficients( const std::vector< std::vector<int> > & indices, std::vector<model_t> & outModel) const = 0;
+    virtual bool computeModelCoefficients( const std::vector< std::vector<int> > & indices, model_t & outModel) const = 0;
 
     /** \brief Recompute the model coefficients using the given inlier set
      * and return them to the user. Pure virtual.
@@ -40,13 +39,13 @@ public:
      * \param[out] optimized_coefficients the resultant recomputed coefficients after non-linear optimization
      */
     virtual void optimizeModelCoefficients (const std::vector< std::vector<int> > & inliers,
-                                            const std::vector<model_t> & model_coefficients,
-                                            std::vector<model_t> & optimized_coefficients) = 0;
+                                            const model_t & model_coefficients,
+                                            model_t & optimized_coefficients) = 0;
 
 
     /// \brief evaluate the score for the elements at indices based on this model.
     ///        low scores mean a good fit.
-    virtual void getSelectedDistancesToModel( const std::vector<model_t> & model, 
+    virtual void getSelectedDistancesToModel( const model_t & model, 
                                               const std::vector< std::vector<int> > & indices,
                                               std::vector< std::vector<double> > & scores) const = 0;
 
@@ -57,7 +56,7 @@ public:
      * \param[in] model_coefficients the coefficients of a model that we need to compute distances to 
      * \param[out] distances the resultant estimated distances
      */
-    virtual void getDistancesToModel (const std::vector<model_t> & model_coefficients, 
+    virtual void getDistancesToModel (const model_t & model_coefficients, 
                                       std::vector< std::vector<double> > &distances);
 
 
@@ -70,7 +69,7 @@ public:
         * the outliers
         * \param[out] inliers the resultant model inliers
         */
-    virtual void selectWithinDistance (const std::vector<model_t> &model_coefficients, 
+    virtual void selectWithinDistance (const model_t &model_coefficients, 
                                        const double threshold,
                                        std::vector< std::vector<int> > &inliers);
 
@@ -83,7 +82,7 @@ public:
         * determining the inliers from the outliers
         * \return the resultant number of inliers
         */
-      virtual int countWithinDistance (const std::vector<model_t> &model_coefficients, 
+      virtual int countWithinDistance (const model_t &model_coefficients, 
                                        const double threshold);
 
 

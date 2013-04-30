@@ -67,12 +67,12 @@ namespace aslam {
                 model_coefficients_ = model_coefficients;
 
                 //MultiRansac preparation for probability computation
-                std::vector< std::vector<int> > * multiIndices = sac_model_->getIndices();
+                boost::shared_ptr<std::vector< std::vector<int> > > multiIndices = sac_model_->getIndices();
                 size_t multiIndicesNumber = 0;
                 for( size_t multiIter = 0; multiIter < multiIndices->size(); multiIter++ )
                   multiIndicesNumber += multiIndices->at(multiIter).size();
 
-                size_t multiSectionSize = 0;
+                size_t multiSelectionSize = 0;
                 for( size_t multiIter = 0; multiIter < selection.size(); multiIter++ )
                   multiSelectionSize += selection.size();
 
@@ -97,10 +97,10 @@ namespace aslam {
 
         if (debug_verbosity_level > 0)
         {
-          size_t multiModelSize = 0;
+          size_t multiModelSize = 0;
           for( size_t modelIter = 0; modelIter < model_.size(); modelIter++ )
-            multiModelSize += model_[i].size();
-            fprintf(stdout,"[sm::RandomSampleConsensus::computeModel] Model: %zu size, %d inliers.\n", model_.size (), n_best_inliers_count);
+            multiModelSize += model_[modelIter].size();
+          fprintf(stdout,"[sm::RandomSampleConsensus::computeModel] Model: %zu size, %d inliers.\n", model_.size (), n_best_inliers_count);
         }
 
         if (model_.empty ())

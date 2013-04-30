@@ -50,15 +50,16 @@ namespace aslam {
     template<typename M>
     void MultiSampleConsensusProblem<M>::getSamples(int &iterations, std::vector< std::vector<int> > &samples)
     {
-      samples.resize( getSampleSize() );
+      std::vector<int> sampleSizes = getSampleSizes();
+      samples.resize( sampleSizes.size() );
 
-      for( size_t subIter = 0; subIter < samples.size() )
+      for( size_t subIter = 0; subIter < samples.size(); subIter++ )
       {
         // We're assuming that indices_ have already been set in the constructor
-        if (indices_[subIter]->size() < (size_t)getSubSampleSize(subIter))
+        if ((*indices_)[subIter].size() < (size_t)sampleSizes[subIter])
         {
           fprintf(stderr,"[sm::SampleConsensusModel::getSamples] Can not select %zu unique points out of %zu!\n",
-                     samples[subIter].size (), indices_[subIter]->size ());
+                     sampleSizes[subIter], (*indices_)[subIter].size ());
           // one of these will make it stop :)
           samples.clear();
           iterations = INT_MAX - 1;
@@ -66,22 +67,23 @@ namespace aslam {
         }
 
         // Get a second point which is different than the first
-        samples[subIter].resize( getSubSampleSize(subIter) );
+        samples[subIter].resize( sampleSizes[subIter] );
       }
-        for (int iter = 0; iter < max_sample_checks_; ++iter)
-        {
-            drawIndexSample(samples);
-          
-          // If it's a good sample, stop here
-          if (isSampleGood (samples))
-            return;
-        }
-        size_t multiSampleSize = 0;
-        for(size_t multiIter = 0; multiIter < samples.size(); multiIter++)
-          multiSampleSize += samples[multiIter].size();
-        
-        fprintf(stdout,"[sm::SampleConsensusModel::getSamples] WARNING: Could not select %d sample points in %d iterations!\n", multiSampleSize, max_sample_checks_);
-        samples.clear();
+
+      for (int iter = 0; iter < max_sample_checks_; ++iter)
+      {
+        drawIndexSample(samples);
+
+        // If it's a good sample, stop here
+        if (isSampleGood (samples))
+          return;
+      }
+      size_t multiSampleSize = 0;
+      for(size_t multiIter = 0; multiIter < samples.size(); multiIter++)
+        multiSampleSize += samples[multiIter].size();
+
+      fprintf(stdout,"[sm::SampleConsensusModel::getSamples] WARNING: Could not select %d sample points in %d iterations!\n", multiSampleSize, max_sample_checks_);
+      samples.clear();
     }
     
     template<typename M>
@@ -97,7 +99,7 @@ namespace aslam {
      */
 
     template<typename M>
-    void MultiSampleConsensusProblem<M>::getDistancesToModel (const std::vector<model_t> & model_coefficients, 
+    void MultiSampleConsensusProblem<M>::getDistancesToModel (const model_t & model_coefficients, 
                                                 std::vector<std::vector<double> > & distances)
     {
         getSelectedDistancesToModel(model_coefficients, *indices_, distances);
@@ -108,9 +110,9 @@ namespace aslam {
     {
         indices_.reset( new std::vector<std::vector<int> >() );
         indices_->resize(N.size());
-        for(int j = 0; j < N.size(); j++)
+        for(size_t j = 0; j < N.size(); j++)
         {
-          indices_->at(j).resize(N[j]);
+          (*indices_)[j].resize(N[j]);
           for(int i = 0; i < N[j]; ++i)
           {
               (*indices_)[j][i] = i;
@@ -135,7 +137,7 @@ namespace aslam {
 
 
     template<typename M>
-    void MultiSampleConsensusProblem<M>::selectWithinDistance (const std::vector<model_t> & model_coefficients, 
+    void MultiSampleConsensusProblem<M>::selectWithinDistance (const model_t & model_coefficients, 
                                                  const double threshold,
                                                  std::vector<std::vector<int> > &inliers)
     {
@@ -144,48 +146,43 @@ namespace aslam {
         inliers.clear();
         inliers.resize(indices_->size());
 
-        for( size_t j = 0; j < (*indices_)[j].size(); j++ )
-        {
-
-
-        dist[j].reserve((*indices_)[j].size());
+        for( size_t j = 0; j < indices_->size(); j++ )
+          dist[j].reserve((*indices_)[j].size());
+        
         getDistancesToModel(model_coefficients, dist);
 
-        inliers[j].clear();
-        inliers[j].reserve((*indices_)[j].size());
-        for(size_t i = 0; i < dist[j].size(); ++i)
+        for( size_t j = 0; j < indices_->size(); j++ )
         {
+          inliers[j].clear();
+          inliers[j].reserve((*indices_)[j].size());
+          for(size_t i = 0; i < dist[j].size(); ++i)
+          {
             if(dist[j][i] < threshold)
-            {
-                inliers[j].push_back( (*indices_)[j][i] );
-            }
-        }
-
+              inliers[j].push_back( (*indices_)[j][i] );
+          }
         }
     }
 
     template<typename M>
-    int MultiSampleConsensusProblem<M>::countWithinDistance (const std::vector<model_t> & model_coefficients, 
+    int MultiSampleConsensusProblem<M>::countWithinDistance (const model_t & model_coefficients, 
                                                const double threshold)
     {
         std::vector<std::vector<double> > dist;
         dist.resize(indices_->size());
 
-        for(int j = 0; j < indices_->size(); j++)
-        {
+        for(size_t j = 0; j < indices_->size(); j++)
+          dist[j].reserve((*indices_)[j].size());
 
-        dist[j].reserve((*indices_)[j].size());
         getDistancesToModel(model_coefficients, dist);
 
         int count = 0;
-        for(size_t i = 0; i < dist[j].size(); ++i)
+        for(size_t j = 0; j < indices_->size(); j++)
         {
+          for(size_t i = 0; i < dist[j].size(); ++i)
+          {
             if(dist[j][i] < threshold)
-            {
-                ++count;
-            }
-        }
-s
+              ++count;
+          }
         }
         
         return count;
