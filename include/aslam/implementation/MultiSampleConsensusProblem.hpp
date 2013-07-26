@@ -58,7 +58,7 @@ namespace aslam {
         // We're assuming that indices_ have already been set in the constructor
         if ((*indices_)[subIter].size() < (size_t)sampleSizes[subIter])
         {
-          fprintf(stderr,"[sm::SampleConsensusModel::getSamples] Can not select %zu unique points out of %zu!\n",
+          fprintf(stderr,"[sm::SampleConsensusModel::getSamples] Can not select %d unique points out of %zu!\n",
                      sampleSizes[subIter], (*indices_)[subIter].size ());
           // one of these will make it stop :)
           samples.clear();
@@ -82,7 +82,7 @@ namespace aslam {
       for(size_t multiIter = 0; multiIter < samples.size(); multiIter++)
         multiSampleSize += samples[multiIter].size();
 
-      fprintf(stdout,"[sm::SampleConsensusModel::getSamples] WARNING: Could not select %d sample points in %d iterations!\n", multiSampleSize, max_sample_checks_);
+      fprintf(stdout,"[sm::SampleConsensusModel::getSamples] WARNING: Could not select %d sample points in %d iterations!\n", (int)multiSampleSize, max_sample_checks_);
       samples.clear();
     }
     
