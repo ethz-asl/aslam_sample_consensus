@@ -11,3 +11,14 @@
 *.lai
 *.la
 *.a
+*~
+#*
+bin
+build
+lib
+*.o
+*.so
+*.pyc
+.project
+.cproject
+.pydevproject
