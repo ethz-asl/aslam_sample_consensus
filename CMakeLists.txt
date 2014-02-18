@@ -39,5 +39,5 @@ rosbuild_add_gtest(${PROJECT_NAME}_test
   test/test_main.cpp
   test/TestRansac.cpp
 )
-
+target_link_libraries(${PROJECT_NAME}_test pthread)
 rosbuild_link_boost(${PROJECT_NAME}_test thread filesystem)
