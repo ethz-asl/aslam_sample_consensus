@@ -21,6 +21,7 @@ find_package(Eigen REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIRS})
 add_definitions(${EIGEN_DEFINITIONS})
 
+
 #uncomment if you have defined messages
 #rosbuild_genmsg()
 #uncomment if you have defined services
@@ -38,5 +39,5 @@ rosbuild_add_gtest(${PROJECT_NAME}_test
   test/test_main.cpp
   test/TestRansac.cpp
 )
-
+target_link_libraries(${PROJECT_NAME}_test pthread)
 rosbuild_link_boost(${PROJECT_NAME}_test thread filesystem)

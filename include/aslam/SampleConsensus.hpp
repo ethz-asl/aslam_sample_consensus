@@ -1,6 +1,8 @@
 #ifndef ASLAM_SAMPLE_CONSENSUS_HPP
 #define ASLAM_SAMPLE_CONSENSUS_HPP
 
+#include <Eigen/Core>
+
 namespace aslam {
     
     /// \brief Superclass for sample consensus
